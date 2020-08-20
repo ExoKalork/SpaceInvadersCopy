@@ -1,6 +1,13 @@
 ﻿using UnityEngine;
 
 public class InputController : MonoBehaviour {
+    public bool ShouldShoot() {
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKey(KeyCode.Space)) {
+            return true;
+        }
+        return false;
+    }
+
     public Direction GetPlayerDirection() {
         Direction playerDir = Direction.none;
         bool goLeft = false;

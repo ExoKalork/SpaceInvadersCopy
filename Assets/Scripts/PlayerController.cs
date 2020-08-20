@@ -1,17 +1,25 @@
 ﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-    // References
+    [Header("References")]
     public InputController input;
-    
-    // Settings
+    public GameObject projectile;
+
+    [Header("Movement")]
     public float maxLeftPos;
     public float maxRightPos;
     public float moveSpeed;
     
+    [Header("Shooting")]
+    public float shootCooldown;
+
+    private float shootCooldownTimer;
+    private bool canShoot;
+
     private void Update() {
         Movement();
         PlayAreaLock();
+        Shooting();
     }
     
     private void Movement() {
@@ -36,5 +44,23 @@ public class PlayerController : MonoBehaviour {
         }
 
         transform.position = pos;
+    }
+
+    private void Shooting() {
+        if (canShoot && input.ShouldShoot()) {
+            ShootProjectile();
+            canShoot = false;
+        } else {
+            shootCooldownTimer -= Time.deltaTime;
+
+            if (shootCooldownTimer <= 0f) {
+                shootCooldownTimer = shootCooldown;
+                canShoot = true;
+            }
+        }
+    }
+
+    private void ShootProjectile() {
+        Instantiate(projectile, transform.position, Quaternion.identity);
     }
 }
