@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
     [Header("References")]
     public InputController input;
     public GameObject projectile;
+    public Text debug1;
 
     [Header("Movement")]
     public float maxLeftPos;
@@ -12,6 +14,7 @@ public class PlayerController : MonoBehaviour {
     
     [Header("Shooting")]
     public float shootCooldown;
+    public Vector2 projectileSpawnOffset;
 
     private float shootCooldownTimer;
     private bool canShoot;
@@ -20,6 +23,7 @@ public class PlayerController : MonoBehaviour {
         Movement();
         PlayAreaLock();
         Shooting();
+        debug1.text = "Cooldown : " + shootCooldownTimer;
     }
     
     private void Movement() {
@@ -47,9 +51,11 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void Shooting() {
-        if (canShoot && input.ShouldShoot()) {
-            ShootProjectile();
-            canShoot = false;
+        if (canShoot) {
+            if (input.ShouldShoot()) {
+                ShootProjectile();
+                canShoot = false;
+            }
         } else {
             shootCooldownTimer -= Time.deltaTime;
 
@@ -61,6 +67,6 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void ShootProjectile() {
-        Instantiate(projectile, transform.position, Quaternion.identity);
+        Instantiate(projectile, (Vector2)transform.position + projectileSpawnOffset, Quaternion.identity);
     }
 }
